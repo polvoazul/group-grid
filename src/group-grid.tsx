@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from './button'
 import React from 'react'
+import InfoPanel from './InfoPanel'  // Add this import
 
 const GRID_SIZE = 4
 const LETTERS = 'eabcdfghijklmnopqrstuvxz'.slice(0, GRID_SIZE)
@@ -83,7 +84,7 @@ export default function GroupGrid() {
 
   const GridRow = ({ row, rowIndex }: { row: string[], rowIndex: number }) => (
     <React.Fragment key={`row-${rowIndex}`}>
-      <LeftHeader index={rowIndex} />
+      <LeftHeaderCell index={rowIndex} />
       {row.map((cell, colIndex) => (
         <Cell
           key={`${rowIndex}-${colIndex}`}
@@ -95,16 +96,18 @@ export default function GroupGrid() {
     </React.Fragment>
   );
 
-
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <GridContainer>
-        <HeaderRow />
-        {grid.map((row, rowIndex) => (
-          <GridRow key={`row-${rowIndex}`} row={row} rowIndex={rowIndex} />
-        ))}
-      </GridContainer>
-      <Ruler onLetterClick={handleLetterClick} onClear={handleClear} />
+    <div className="flex items-start space-x-8">
+      <div className="flex flex-col items-center space-y-4">
+        <GridContainer>
+          <HeaderRow />
+          {grid.map((row, rowIndex) => (
+            <GridRow key={`row-${rowIndex}`} row={row} rowIndex={rowIndex} />
+          ))}
+        </GridContainer>
+        <Ruler onLetterClick={handleLetterClick} onClear={handleClear} />
+      </div>
+      <InfoPanel selectedCell={selectedCell} />
     </div>
   )
 }
@@ -119,7 +122,7 @@ const HeaderRow = () => (
   </div>
 );
 
-const LeftHeader = ({ index }: { index: number }) => (
+const LeftHeaderCell = ({ index }: { index: number }) => (
   <div className="font-bold text-center flex items-center justify-center">
         {LETTERS[index]}
   </div>
