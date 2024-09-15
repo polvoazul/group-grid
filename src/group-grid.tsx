@@ -8,41 +8,6 @@ import { update_possibilities } from './update_possibilities'
 
 export const LETTERS = 'eabcdfghijklmnopqrstuvxz'
 
-function Cell({ value, potential_values, onClick, isSelected }: { value: string; potential_values: Set<string>, onClick: () => void; isSelected: boolean }) {
-  return (
-    <div
-      className={`w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl font-bold cursor-pointer ${
-        isSelected ? 'bg-gray-400' : 'bg-gray'
-      }`}
-      onClick={onClick}
-    >
-      <div className="flex flex-col h-full w-full">
-        <div className="flex-grow flex items-center justify-center" style={{ minHeight: '70%' }}>
-          {value}
-        </div>
-        <div className="text-sm opacity-50 flex items-center justify-center" style={{ minHeight: '30%' }}>
-          {Array.from(potential_values).join('')}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Ruler({ onLetterClick, onClear, gridSize }: { onLetterClick: (letter: string) => void; onClear: () => void; gridSize: number }) {
-  return (
-    <div className="flex space-x-2 mt-4">
-      {LETTERS.slice(0, gridSize).split('').map((letter) => (
-        <Button key={letter} onClick={() => onLetterClick(letter)} variant="outline" className="w-16 h-16 p-0 text-xl">
-          {letter}
-        </Button>
-      ))}
-      <Button onClick={onClear} variant="destructive" className="px-4 text-xl">
-        Clear
-      </Button>
-    </div>
-  );
-}
-
 export default function GroupGrid() {
   const [gridSize, setGridSize] = useState(4)
   const [possibilities, _setPossibilities] = useState(() => initPossibilities(gridSize))
@@ -54,11 +19,14 @@ export default function GroupGrid() {
       const newGrid = [...grid]
       newGrid[row][col] = value
       _setGrid(newGrid)
-      update_possibilities(newGrid, _setPossibilities, gridSize) 
     } else {
       toast(`Invalid move: ${value} is not possible for this cell`)
     }
   }
+
+  useEffect(() => {
+    update_possibilities(grid, _setPossibilities, gridSize)
+  }, [grid])
 
   const handleCellClick = (row: number, col: number) => {
     setSelectedCell([row, col])
@@ -212,4 +180,39 @@ function makeGridFromPossibilities(possibilites: ReturnType<typeof initPossibili
       cell.size === 1 ? Array.from(cell)[0] : ''
     )
   )
+}
+
+function Cell({ value, potential_values, onClick, isSelected }: { value: string; potential_values: Set<string>, onClick: () => void; isSelected: boolean }) {
+  return (
+    <div
+      className={`w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl font-bold cursor-pointer ${
+        isSelected ? 'bg-gray-400' : 'bg-gray'
+      }`}
+      onClick={onClick}
+    >
+      <div className="flex flex-col h-full w-full">
+        <div className="flex-grow flex items-center justify-center" style={{ minHeight: '70%' }}>
+          {value}
+        </div>
+        <div className="text-sm opacity-50 flex items-center justify-center" style={{ minHeight: '30%' }}>
+          {Array.from(potential_values).join('')}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Ruler({ onLetterClick, onClear, gridSize }: { onLetterClick: (letter: string) => void; onClear: () => void; gridSize: number }) {
+  return (
+    <div className="flex space-x-2 mt-4">
+      {LETTERS.slice(0, gridSize).split('').map((letter) => (
+        <Button key={letter} onClick={() => onLetterClick(letter)} variant="outline" className="w-16 h-16 p-0 text-xl">
+          {letter}
+        </Button>
+      ))}
+      <Button onClick={onClear} variant="destructive" className="px-4 text-xl">
+        Clear
+      </Button>
+    </div>
+  );
 }
