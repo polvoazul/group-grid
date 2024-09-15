@@ -19,14 +19,15 @@ export default function GroupGrid() {
       const newGrid = [...grid]
       newGrid[row][col] = value
       _setGrid(newGrid)
+      update_possibilities(grid, _setPossibilities, gridSize)
     } else {
       toast(`Invalid move: ${value} is not possible for this cell`)
     }
   }
 
   useEffect(() => {
-    update_possibilities(grid, _setPossibilities, gridSize)
-  }, [grid])
+      update_possibilities(grid, _setPossibilities, gridSize)
+  }, [])
 
   const handleCellClick = (row: number, col: number) => {
     setSelectedCell([row, col])
