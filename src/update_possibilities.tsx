@@ -37,7 +37,7 @@ export function update_possibilities(grid: string[][], _setPossibilities: (arg0:
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
       if (grid[i][j] === 'e') {
-        if(newPossibilities[j][i].size === 0)
+        if(newPossibilities[j][i].size > 0)
           newPossibilities[j][i] = new Set(['e'])
         for (let k = 0; k < gridSize; k++) {
           if (k !== j) newPossibilities[k][i].delete('e')
